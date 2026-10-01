@@ -10,7 +10,7 @@ int SAMPLE_LIMIT = 20;
  * Takes moisture samples up to the given limit.
  * Returns an average.
  */
-int averageSample(int limit)
+int averageSample(int limit = SAMPLE_LIMIT)
 {
     long total = 0;
 
