@@ -16,7 +16,9 @@ float readHumidity(DHT sensor, int limit = SAMPLE_LIMIT)
     long total = 0;
 
     for (int i = 0; i < limit; ++i) {
-        total += sensor.readHumidity();
+        float humidity = sensor.readHumidity();
+        if (isnan(humidity)) return -1;
+        total += humidity;
         delay(5);
     }
 
@@ -28,7 +30,9 @@ float readTemp(DHT sensor, int limit = SAMPLE_LIMIT, bool celcius = false)
     long total = 0;
 
     for (int i = 0; i < limit; ++i) {
-        total += sensor.readTemperature(celcius);
+        float temp = sensor.readTemperature(celcius);
+        if (isnan(temp)) return -1;
+        total += temp;
         delay(5);
     }
 
