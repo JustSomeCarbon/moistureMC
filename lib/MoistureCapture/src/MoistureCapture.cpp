@@ -4,7 +4,7 @@
 uint8_t MOISTURE_PIN = 34;
 int DRY_RAW = 3240;
 int WET_RAW = 1100;
-int SAMPLE_LIMIT = 20;
+const int SAMPLE_LIMIT = 20;
 
 /**
  * Takes moisture samples up to the given limit.
