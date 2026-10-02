@@ -2,6 +2,9 @@
 
 RTC_DS3231 rtc;
 
+extern uint8_t RTC_SDA_PIN;
+extern uint8_t RTC_SCL_PIN;
+
 constexpr char daysOfTheWeek[7][12] = {
     "Sunday",
     "Monday",
@@ -12,7 +15,7 @@ constexpr char daysOfTheWeek[7][12] = {
     "Saturday"
 };
 
-void initialize();
+void initialize(uint8_t rtc_sqw_pin);
 DateTime now();
 uint32_t nowUnix();
 String nowToString();

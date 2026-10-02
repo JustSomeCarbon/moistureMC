@@ -1,10 +1,15 @@
 #include <Arduino.h>
+#include <Wire.h>
 #include <RTClib.h>
 
 #include "RTClock.h"
 
-void initialize()
+uint8_t RTC_SDA_PIN = 21;
+uint8_t RTC_SCL_PIN = 22;
+
+void initialize(uint8_t rtc_sqw_pin = -1)
 {
+    Wire.begin(RTC_SDA_PIN, RTC_SCL_PIN);
     if (!rtc.begin()) {
         Serial.println("Could not find RTC connection");
         Serial.flush();
@@ -15,6 +20,11 @@ void initialize()
     {
         Serial.println("RTC lost power, reseting time...");
         rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+    }
+
+    if (rtc_sqw_pin != -1)
+    {
+        pinMode(rtc_sqw_pin, INPUT_PULLUP);
     }
 
     rtc.writeSqwPinMode(DS3231_OFF);
