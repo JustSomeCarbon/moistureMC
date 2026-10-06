@@ -61,6 +61,16 @@ String readLine(File f)
     return line;
 }
 
+std::vector<String> readRows(File f, int rows)
+{
+    std::vector<String> readRows;
+    for(int i = 0; i < rows; i++) {
+        readRows.push_back(readLine(f));
+    }
+
+    return readRows;
+}
+
 std::vector<String> readRowsWithTag(File f, const String& targetTag)
 {
     std::vector<String> rows;
