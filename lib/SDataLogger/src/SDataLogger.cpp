@@ -15,12 +15,19 @@ File openFile(char* mode)
     return f;
 }
 
+void createFile(String cols)
+{
+    File f = openFile(FILE_WRITE);
+    f.println("timestamp,"+cols+",tag");
+    f.close();
+}
+
 void closeFile(File f)
 {
     f.close();
 }
 
-File initialize(String cols)
+void initialize(String cols)
 {
     if (!SD.begin(SD_CS)) {
         Serial.println("Failed to start SD card module");
@@ -28,12 +35,8 @@ File initialize(String cols)
     }
 
     if (!SD.exists(LOG_FILE)) {
-        File f = openFile(FILE_WRITE);
-        f.println("timestamp,"+cols+",tag");
-        return f;
+        createFile(cols);
     }
-    File f = openFile(FILE_WRITE);
-    return f;
 }
 
 void write(String data, String tag, unsigned long currentTime = -1)
@@ -61,8 +64,9 @@ void write(String data, String tag, CallbackString timestamp)
     f.close();
 }
 
-String readLine(File f)
+String readLine()
 {
+    File f = openFile(FILE_READ);
     if (!f) {
         Serial.println("Failed to open log file, ensure file exists.");
         return "";
@@ -71,27 +75,32 @@ String readLine(File f)
     String line = f.readStringUntil('\n');
     line.trim();
 
+    f.close();
+
     return line;
 }
 
-std::vector<String> readRows(File f, int rows)
+std::vector<String> readRows(int rows)
 {
+    File f = openFile(FILE_READ);
     std::vector<String> readRows;
     for(int i = 0; i < rows; i++) {
-        readRows.push_back(readLine(f));
+        readRows.push_back(readLine());
     }
+    closeFile(f);
 
     return readRows;
 }
 
-std::vector<String> readRowsWithTag(File f, const String& targetTag)
+std::vector<String> readRowsWithTag(const String& targetTag)
 {
+    File f = openFile(FILE_READ);
     std::vector<String> rows;
 
     f.seek(0);
 
     while(f.available()) {
-        String line = readLine(f);
+        String line = readLine();
         if (line.length() == 0) {
             continue;
         }
@@ -107,6 +116,7 @@ std::vector<String> readRowsWithTag(File f, const String& targetTag)
             rows.push_back(line);
         }
     }
+    closeFile(f);
 
     return rows;
 }
