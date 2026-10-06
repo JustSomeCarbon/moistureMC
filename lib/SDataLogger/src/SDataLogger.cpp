@@ -9,7 +9,18 @@ using CallbackString = String (*)();
 uint8_t SD_CS = 5;
 char* LOG_FILE = "/log.csv";
 
-void initialize(String cols)
+File openFile(char* mode)
+{
+    File f = SD.open(LOG_FILE, mode);
+    return f;
+}
+
+void closeFile(File f)
+{
+    f.close();
+}
+
+File initialize(String cols)
 {
     if (!SD.begin(SD_CS)) {
         Serial.println("Failed to start SD card module");
@@ -17,16 +28,18 @@ void initialize(String cols)
     }
 
     if (!SD.exists(LOG_FILE)) {
-        File f = SD.open(LOG_FILE, FILE_WRITE);
+        File f = openFile(FILE_WRITE);
         f.println("timestamp,"+cols+",tag");
-        f.close();
+        return f;
     }
+    File f = openFile(FILE_WRITE);
+    return f;
 }
 
 void write(String data, String tag, unsigned long currentTime = -1)
 {
     if (currentTime == -1) currentTime = millis();
-    File f = SD.open(LOG_FILE, FILE_APPEND);
+    File f = openFile(FILE_APPEND);
 
     f.print(currentTime);
     f.println(","+data+","+tag);
@@ -41,7 +54,7 @@ void write(String data, String tag, unsigned long currentTime = -1)
 void write(String data, String tag, CallbackString timestamp)
 {
     String currentTime = timestamp();
-    File f = SD.open(LOG_FILE, FILE_APPEND);
+    File f = openFile(FILE_APPEND);
 
     f.println(currentTime+","+data+","+tag);
 
