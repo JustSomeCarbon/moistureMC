@@ -4,7 +4,7 @@ extern uint8_t SD_CS;
 extern char* LOG_FILE;
 
 File openFile(char* mode);
-void createFile();
+void createFile(String cols);
 void closeFile(File f);
 
 void initialize(String cols);
